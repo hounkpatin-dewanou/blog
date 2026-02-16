@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rédiger un nouvel article — Blog Manager{% endblock %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto px-4 py-12">
+    {# Fil d'ariane / Retour #}
+    <nav class="mb-8">
+        <a href="{{ path('app_post_index') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center transition">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Retour à la liste
+        </a>
+    </nav>
+
+    <div class="bg-white rounded-3xl shadow-xl shadow-indigo-100/50 border border-gray-100 overflow-hidden">
+        <div class="p-8 md:p-12">
+            <div class="mb-10">
+                <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Nouvel Article</h1>
+                <p class="text-gray-500 mt-2">Partagez vos idées avec le monde. Votre contenu sera publié instantanément.</p>
+            </div>
+
+            {# Inclusion du formulaire stylisé #}
+            {{ include('post/_form.html.twig') }}
+        </div>
+    </div>
+</div>
+{% endblock %}

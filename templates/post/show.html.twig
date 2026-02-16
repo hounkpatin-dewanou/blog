@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ post.title }} — Blog Manager{% endblock %}
+
+{% block body %}
+<article class="max-w-4xl mx-auto px-4 py-12">
+    {# Header de l'article #}
+    <header class="mb-12 text-center">
+        <div class="flex items-center justify-center space-x-2 text-indigo-600 mb-4">
+            <span class="text-sm font-bold uppercase tracking-widest">Publication</span>
+            <span class="text-gray-300">•</span>
+            <time class="text-sm text-gray-500">{{ post.createdAt|date('d F Y') }}</time>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
+            {{ post.title }}
+        </h1>
+        
+        <div class="flex flex-wrap justify-center gap-4">
+            {# --- BOUTON PARTAGER --- #}
+            <button onclick="copyShareLink()" class="px-6 py-2 bg-green-500 text-white rounded-full font-semibold hover:bg-green-600 shadow-lg transition transform active:scale-95 flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.368 3 3 0 000 5.368zm0 7.368a3 3 0 100 6 3 3 0 000-6z"/></svg>
+                Partager
+            </button>
+
+            <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="px-6 py-2 bg-gray-900 text-white rounded-full font-semibold hover:bg-gray-800 transition shadow-md">Modifier</a>
+            <a href="{{ path('app_post_index') }}" class="px-6 py-2 bg-gray-100 text-gray-600 rounded-full font-semibold hover:bg-gray-200 transition">Liste</a>
+        </div>
+    </header>
+
+    {# Corps de l'article #}
+    <div class="prose prose-indigo lg:prose-xl mx-auto bg-white p-8 md:p-16 rounded-3xl shadow-sm border border-gray-100 leading-loose text-gray-700">
+        {{ post.content|nl2br }}
+    </div>
+
+    {# Footer de l'article #}
+    <footer class="mt-12 pt-8 border-t border-gray-100 flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+            <div class="h-12 w-12 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-xl">
+                {{ app.user.userIdentifier|first|upper }}
+            </div>
+            <div>
+                <p class="text-sm font-bold text-gray-900">Publié par</p>
+                <p class="text-sm text-gray-500">{{ app.user.userIdentifier }}</p>
+            </div>
+        </div>
+        {{ include('post/_delete_form.html.twig') }}
+    </footer>
+</article>
+
+{# --- SCRIPT POUR LE LIEN --- #}
+<script>
+function copyShareLink() {
+    const shareUrl = "{{ share_url|escape('js') }}";
+    navigator.clipboard.writeText(shareUrl).then(() => {
+        alert("Lien de partage copié !");
+    });
+}
+</script>
+{% endblock %}

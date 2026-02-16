@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier l'article — Blog Manager{% endblock %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto px-4 py-12">
+    <nav class="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <a href="{{ path('app_post_index') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Retour
+        </a>
+
+        <div class="flex items-center space-x-3">
+            {# --- BOUTON PARTAGER --- #}
+            <button onclick="copyShareLink()" class="flex items-center px-4 py-2 text-sm font-medium text-white bg-green-500 hover:bg-green-600 rounded-lg transition-all shadow-md active:scale-95">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.368 3 3 0 000 5.368zm0 7.368a3 3 0 100 6 3 3 0 000-6z"/></svg>
+                Partager
+            </button>
+
+            {{ include('post/_delete_form.html.twig') }}
+        </div>
+    </nav>
+
+    <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+        <div class="p-8 md:p-12">
+            <h1 class="text-3xl font-extrabold text-gray-900 mb-8">Modifier l'article</h1>
+            
+            {{ include('post/_form.html.twig', {'button_label': 'Mettre à jour l\'article'}) }}
+        </div>
+    </div>
+</div>
+
+{# --- LE SCRIPT DE COPIE --- #}
+<script>
+function copyShareLink() {
+    // On génère le lien vers la route publique 'app_post_share'
+    const shareUrl = window.location.origin + "{{ path('app_post_share', {'id': post.id}) }}";
+    
+    navigator.clipboard.writeText(shareUrl).then(() => {
+        alert("Lien public copié ! Partagez-le avec le monde.");
+    }).catch(err => {
+        console.error('Erreur lors de la copie : ', err);
+    });
+}
+</script>
+{% endblock %}

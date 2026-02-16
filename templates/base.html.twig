@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Blog Manager{% endblock %}</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-gray-50 font-sans leading-normal tracking-normal">
+        <nav class="bg-white border-b border-gray-200 fixed w-full z-30 top-0">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <span class="text-2xl font-bold text-indigo-600 tracking-tight">Blog<span class="text-gray-900">Manager</span></span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="/" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Accueil</a>
+                        {% if app.user %}
+                            <a href="{{ path('app_post_index') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Mes Blogs</a>
+                            <a href="{{ path('app_logout') }}" class="bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition">Déconnexion</a>
+                        {% else %}
+                            <a href="{{ path('app_login') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Connexion</a>
+                            <a href="{{ path('app_register') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 shadow-md transition">S'inscrire</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="pt-20">
+            {% block body %}{% endblock %}
+        </main>
+
+        <footer class="bg-white border-t border-gray-200 py-8 mt-12">
+            <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
+                &copy; {{ "now"|date("Y") }} Blog Manager
+            </div>
+        </footer>
+    </body>
+</html>
