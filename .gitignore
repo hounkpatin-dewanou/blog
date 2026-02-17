@@ -25,7 +25,6 @@
 
 ###> custom ###
 Makefile
-Dockerfile
 compose.override.yaml
 docker
 .idea
