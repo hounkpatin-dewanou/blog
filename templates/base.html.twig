@@ -1,40 +1,117 @@
 <!DOCTYPE html>
 <html>
+
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Blog Manager{% endblock %}</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Blog Manager{% endblock %}</title>
+
+    <link rel="icon" type="image/png" href="{{ asset('favicon/favicon-96x96.png') }}" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon/favicon.svg') }}" />
+    <link rel="shortcut icon" href="{{ asset('favicon/favicon.ico') }}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png') }}" />
+    <link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+     <style>
+            /* Pour éviter les flashs de contenu lors du chargement du JS */
+            .hidden { display: none; }
+        </style>
+</head>
     <body class="bg-gray-50 font-sans leading-normal tracking-normal">
-        <nav class="bg-white border-b border-gray-200 fixed w-full z-30 top-0">
+        <nav class="bg-white border-b border-gray-200 fixed w-full z-40 top-0">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <span class="text-2xl font-bold text-indigo-600 tracking-tight">Blog<span class="text-gray-900">Manager</span></span>
+                        <a href="/" class="text-2xl font-bold text-indigo-600 tracking-tight flex items-center">
+                            Blog<span class="text-gray-900">Manager</span>
+                        </a>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <a href="/" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Accueil</a>
+
+                    <div class="hidden md:flex items-center space-x-6">
+                        <a href="/" class="text-gray-600 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition">Accueil</a>
+                        
                         {% if app.user %}
-                            <a href="{{ path('app_post_index') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Mes Blogs</a>
-                            <a href="{{ path('app_logout') }}" class="bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition">Déconnexion</a>
+                            <a href="{{ path('app_post_index') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition">Mes Blogs</a>
+                            
+                            <div class="relative ml-3">
+                                <button onclick="toggleDropdown('user-menu')" class="flex items-center focus:outline-none group">
+                                    <div class="h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold border-2 border-transparent group-hover:border-indigo-300 transition">
+                                        {{ app.user.userIdentifier|first|upper }}
+                                    </div>
+                                    <svg class="w-4 h-4 ml-1 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </button>
+                                <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-lg py-1 z-50">
+                                    <div class="px-4 py-2 border-b border-gray-50">
+                                        <p class="text-xs text-gray-400 font-semibold uppercase">Utilisateur</p>
+                                        <p class="text-sm text-gray-700 truncate">{{ app.user.userIdentifier }}</p>
+                                    </div>
+                                    <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition">Déconnexion</a>
+                                </div>
+                            </div>
                         {% else %}
-                            <a href="{{ path('app_login') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Connexion</a>
-                            <a href="{{ path('app_register') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 shadow-md transition">S'inscrire</a>
+                            <a href="{{ path('app_login') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition">Connexion</a>
+                            <a href="{{ path('app_register') }}" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-indigo-700 shadow-sm transition transform active:scale-95">S'inscrire</a>
                         {% endif %}
                     </div>
+
+                    <div class="flex items-center md:hidden">
+                        <button onclick="toggleMenu('mobile-menu')" class="text-gray-500 p-2 hover:bg-gray-100 rounded-lg focus:outline-none">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 animate-in slide-in-from-top duration-300">
+                <div class="px-4 pt-2 pb-6 space-y-2">
+                    <a href="/" class="block px-3 py-4 text-base font-medium text-gray-700 border-b border-gray-50">Accueil</a>
+                    {% if app.user %}
+                        <div class="py-4 px-3 bg-indigo-50 rounded-xl mb-2">
+                            <p class="text-xs text-indigo-400 font-bold uppercase mb-1">Connecté en tant que</p>
+                            <p class="text-indigo-900 font-medium truncate">{{ app.user.userIdentifier }}</p>
+                        </div>
+                        <a href="{{ path('app_post_index') }}" class="block px-3 py-3 text-base font-medium text-gray-700 hover:text-indigo-600">Mes Blogs</a>
+                        <a href="{{ path('app_logout') }}" class="block px-3 py-3 text-base font-medium text-red-600 bg-red-50 rounded-lg">Déconnexion</a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="block px-3 py-3 text-base font-medium text-gray-700">Connexion</a>
+                        <a href="{{ path('app_register') }}" class="block px-3 py-3 text-base font-medium text-white bg-indigo-600 rounded-lg text-center">S'inscrire</a>
+                    {% endif %}
                 </div>
             </div>
         </nav>
 
-        <main class="pt-20">
+        <main class="pt-24 min-h-screen">
             {% block body %}{% endblock %}
         </main>
 
-        <footer class="bg-white border-t border-gray-200 py-8 mt-12">
-            <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
-                &copy; {{ "now"|date("Y") }} Blog Manager
+        <footer class="bg-white border-t border-gray-100 py-10 mt-20">
+            <div class="max-w-7xl mx-auto px-4 text-center">
+                <p class="text-gray-400 text-sm italic">&copy; {{ "now"|date("Y") }} Blog Manager — Créé avec passion.</p>
             </div>
         </footer>
+
+        <script>
+            // Fonction pour basculer le menu mobile
+            function toggleMenu(id) {
+                const menu = document.getElementById(id);
+                menu.classList.toggle('hidden');
+            }
+
+            // Fonction pour basculer le dropdown profil
+            function toggleDropdown(id) {
+                const dropdown = document.getElementById(id);
+                dropdown.classList.toggle('hidden');
+            }
+
+            // Fermer le dropdown si on clique ailleurs sur l'écran
+            window.onclick = function(event) {
+                if (!event.target.closest('.relative')) {
+                    const dropdowns = document.querySelectorAll('#user-menu');
+                    dropdowns.forEach(d => d.classList.add('hidden'));
+                }
+            }
+        </script>
     </body>
 </html>

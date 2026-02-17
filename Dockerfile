@@ -40,8 +40,7 @@ RUN mkdir -p var/cache var/log \
 EXPOSE 80
 
 # On force l'update de la base, on vide le cache et on lance Apache
-# Commande temporaire pour purger la base en ligne et repartir à neuf le drop
-CMD php bin/console doctrine:schema:drop --force --no-interaction && \
-    php bin/console doctrine:schema:update --force --no-interaction && \ 
+# Commande temporaire pour purger la base en ligne et repartir à neuf le drop : php bin/console doctrine:schema:drop --force --no-interaction && \
+CMD php bin/console doctrine:schema:update --force --no-interaction && \ 
     php bin/console cache:clear --env=prod && \
     apache2-foreground
