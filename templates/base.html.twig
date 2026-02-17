@@ -82,9 +82,32 @@
             </div>
         </nav>
 
-        <main class="pt-24 min-h-screen">
-            {% block body %}{% endblock %}
-        </main>
+    <div class="fixed top-20 inset-x-0 z-50 flex flex-col items-center justify-center pointer-events-none">
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash-message transform transition-all duration-500 ease-in-out bg-green-500 text-white px-6 py-3 rounded-xl shadow-2xl mb-2 pointer-events-auto border border-green-400 font-medium">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+
+<main class="pt-24 min-h-screen">
+    {% block body %}{% endblock %}
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const flashes = document.querySelectorAll('.flash-message');
+        flashes.forEach(flash => {
+            setTimeout(() => {
+                flash.style.opacity = '0';
+                flash.style.transform = 'translateY(-20px)';
+                setTimeout(() => flash.remove(), 500);
+            }, 5000); // 5000ms = 5 secondes
+        });
+    });
+</script>
 
         <footer class="bg-white border-t border-gray-100 py-10 mt-20">
             <div class="max-w-7xl mx-auto px-4 text-center">
