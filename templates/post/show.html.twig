@@ -9,7 +9,7 @@
         <div class="flex items-center justify-center space-x-2 text-indigo-600 mb-4">
             <span class="text-sm font-bold uppercase tracking-widest">Publication</span>
             <span class="text-gray-300">•</span>
-            <time class="text-sm text-gray-500">{{ post.createdAt|date('d F Y') }}</time>
+            <time class="text-sm text-gray-500">{{ post.createdAt ? post.createdAt|date('d F Y') : 'Date inconnue' }}</time>
         </div>
         <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
             {{ post.title }}
@@ -17,9 +17,9 @@
         
         <div class="flex flex-wrap justify-center gap-4">
             {# --- BOUTON PARTAGER --- #}
-            <button onclick="copyShareLink()" class="px-6 py-2 bg-green-500 text-white rounded-full font-semibold hover:bg-green-600 shadow-lg transition transform active:scale-95 flex items-center">
+            <button onclick="copyShareLink(this)" id="shareBtnShow" class="px-6 py-2 bg-green-500 text-white rounded-full font-semibold hover:bg-green-600 shadow-lg transition transform active:scale-95 flex items-center">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.368 3 3 0 000 5.368zm0 7.368a3 3 0 100 6 3 3 0 000-6z"/></svg>
-                Partager
+                <span class="btn-text">Partager</span>
             </button>
 
             <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="px-6 py-2 bg-gray-900 text-white rounded-full font-semibold hover:bg-gray-800 transition shadow-md">Modifier</a>
@@ -28,12 +28,12 @@
     </header>
 
     {# Corps de l'article #}
-    <div class="prose prose-indigo lg:prose-xl mx-auto bg-white p-8 md:p-16 rounded-3xl shadow-sm border border-gray-100 leading-loose text-gray-700">
+    <div class="prose prose-indigo lg:prose-xl mx-auto bg-white p-8 md:p-16 rounded-3xl shadow-sm border border-gray-100 leading-loose text-gray-700 whitespace-pre-line">
         {{ post.content|nl2br }}
     </div>
 
     {# Footer de l'article #}
-    <footer class="mt-12 pt-8 border-t border-gray-100 flex justify-between items-center">
+    <footer class="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
         <div class="flex items-center space-x-4">
             <div class="h-12 w-12 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-xl">
                 {{ app.user.userIdentifier|first|upper }}
@@ -43,16 +43,29 @@
                 <p class="text-sm text-gray-500">{{ app.user.userIdentifier }}</p>
             </div>
         </div>
-        {{ include('post/_delete_form.html.twig') }}
+        <div class="flex items-center">
+            {{ include('post/_delete_form.html.twig') }}
+        </div>
     </footer>
 </article>
 
 {# --- SCRIPT POUR LE LIEN --- #}
 <script>
-function copyShareLink() {
-    const shareUrl = "{{ share_url|escape('js') }}";
+function copyShareLink(btn) {
+    const shareUrl = "{{ url('app_post_share', {'id': post.id}) }}";
+    const btnText = btn.querySelector('.btn-text');
+    
     navigator.clipboard.writeText(shareUrl).then(() => {
-        alert("Lien de partage copié !");
+        const originalText = btnText.innerText;
+        btn.classList.replace('bg-green-500', 'bg-indigo-600');
+        btnText.innerText = "Lien copié !";
+        
+        setTimeout(() => {
+            btn.classList.replace('bg-indigo-600', 'bg-green-500');
+            btnText.innerText = originalText;
+        }, 2500);
+    }).catch(err => {
+        console.error('Erreur :', err);
     });
 }
 </script>
