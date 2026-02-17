@@ -28,9 +28,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 COPY . .
 
 # 7) Installer les dépendances Symfony (mode production)
-# On ignore les scripts pour éviter les erreurs de DB pendant le build
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 # 8) Droits sur les dossiers de cache et de logs (Crucial pour Symfony)
 RUN mkdir -p var/cache var/log \
