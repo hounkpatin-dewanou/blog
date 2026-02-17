@@ -37,7 +37,7 @@ class RegistrationController extends AbstractController
             $em->persist($user);
             $em->flush();
 
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user);
+            //$this->emailVerifier->sendEmailConfirmation('app_verify_email', $user);
 
             return $this->redirectToRoute('app_validate_account');
         }
@@ -53,8 +53,8 @@ class RegistrationController extends AbstractController
         return $this->render('registration/validate.html.twig');
     }
 
-    #[Route('/verify/email', name: 'app_verify_email')]
-    public function verifyUserEmail (Request $request, UserRepository $userRepository): Response
+    //#[Route('/verify/email', name: 'app_verify_email')]
+    /*public function verifyUserEmail (Request $request, UserRepository $userRepository): Response
     {
         $id = $request->query->get('id');
 
@@ -79,5 +79,5 @@ class RegistrationController extends AbstractController
         $this->addFlash('success', 'Votre adresse email a bien été vérifiée.');
 
         return $this->redirectToRoute('app_login');
-    }
+    }*/
 }

@@ -39,6 +39,7 @@ RUN mkdir -p var/cache var/log \
 # 9) Render utilise le port 80 par défaut avec Apache dans ce container
 EXPOSE 80
 
-# 10) Commande de démarrage : on vide le cache et on lance Apache
-# Le script attend que la DB soit prête si besoin
-CMD php bin/console cache:clear --env=prod && apache2-foreground
+# On force l'update de la base, on vide le cache et on lance Apache
+CMD php bin/console doctrine:schema:update --force --no-interaction && \
+    php bin/console cache:clear --env=prod && \
+    apache2-foreground
